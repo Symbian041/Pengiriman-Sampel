@@ -74,6 +74,12 @@
             text-align: center;
             vertical-align: middle;
         }
+        .doc-preview {
+            max-width: 100%;
+            max-height: 200px;
+            display: none;
+            margin: 10px auto 0;
+        }
 
         .btn { 
             background-color: #4CAF50; 
@@ -107,21 +113,18 @@
             h2 { font-size: 18px; }
             h3 { font-size: 16px; }
             
-            /* Form info menjadi 1 kolom vertikal */
             .info-grid { 
                 grid-template-columns: 1fr; 
                 gap: 6px; 
             }
             .info-grid label { margin-top: 6px; }
             
-            /* Mencegah auto-zoom di iOS/Android saat klik input */
             input[type="text"], input[type="date"], select, textarea {
                 font-size: 16px;
             }
             
             .btn { width: 100%; }
             
-            /* Tanda tangan tersusun rapi ke bawah */
             .signatures { 
                 flex-direction: column; 
                 gap: 25px; 
@@ -130,21 +133,92 @@
             .sign-space { height: 70px; }
         }
         
-        /* Tampilan Cetak / Print PDF */
+        /* Pengaturan Kertas A4 */
+        @page {
+            size: A4 portrait;
+            margin: 8mm 10mm;
+        }
+
+        /* Tampilan Cetak / Print PDF 1 Halaman A4 */
         @media print {
-            .no-print { display: none; }
-            .table-responsive { overflow: visible; }
+            .no-print { display: none !important; }
+            body { 
+                margin: 0; 
+                padding: 0; 
+                max-width: 100%;
+                font-size: 11px;
+                line-height: 1.25;
+            }
+            .header {
+                margin-bottom: 8px;
+                padding-bottom: 5px;
+                border-bottom-width: 2px;
+            }
+            .logo {
+                max-width: 170px;
+                margin-bottom: 2px;
+            }
+            .company-name { font-size: 16px; margin: 2px 0; }
+            .site-name { font-size: 13px; margin: 2px 0; }
+            h2 { font-size: 14px; margin: 4px 0 0 0; }
+            h3 { font-size: 12px; margin: 8px 0 4px 0; }
+
+            .info-grid {
+                grid-template-columns: 135px 1fr;
+                gap: 3px 8px;
+                margin-bottom: 8px;
+            }
+            .info-grid label { margin-top: 0; font-size: 11px; }
+
+            .table-responsive { 
+                overflow: visible; 
+                margin-bottom: 6px; 
+            }
             table { min-width: 100%; }
-            input, select, textarea { 
+            th, td { 
+                padding: 4px 6px; 
+                font-size: 10.5px;
+            }
+
+            /* Memadatkan kotak foto dokumentasi agar muat 1 halaman */
+            .doc-cell {
+                height: 135px;
+                padding: 4px;
+            }
+            .doc-preview {
+                max-height: 125px;
+                margin: 0 auto;
+            }
+
+            input[type="text"], input[type="date"], select, textarea { 
                 border: none; 
                 background: transparent; 
                 padding: 0; 
+                font-size: 11px;
                 appearance: none; 
                 -webkit-appearance: none; 
+                resize: none;
             }
-            body { margin: 0; padding: 0; }
-            .signatures { flex-direction: row; }
-            .sign-box { width: 30%; }
+            #tabelSampel textarea {
+                min-height: 24px;
+                height: 24px;
+            }
+            #catatan {
+                min-height: 32px;
+                height: 32px;
+                border: 1px solid #000;
+                padding: 4px 6px;
+            }
+
+            .signatures { 
+                flex-direction: row; 
+                margin-top: 12px; 
+                gap: 10px;
+                page-break-inside: avoid;
+            }
+            .sign-box { width: 32%; }
+            .sign-box p { margin: 2px 0; font-size: 11px; }
+            .sign-space { height: 48px; }
         }
     </style>
 </head>
@@ -211,11 +285,11 @@
             <tr>
                 <td class="doc-cell">
                     <input type="file" class="no-print" accept="image/*" onchange="previewImage(event, 'preview1')">
-                    <br><img id="preview1" style="max-width: 100%; max-height: 200px; display: none; margin: 10px auto 0;">
+                    <img id="preview1" class="doc-preview">
                 </td>
                 <td class="doc-cell">
                     <input type="file" class="no-print" accept="image/*" onchange="previewImage(event, 'preview2')">
-                    <br><img id="preview2" style="max-width: 100%; max-height: 200px; display: none; margin: 10px auto 0;">
+                    <img id="preview2" class="doc-preview">
                 </td>
             </tr>
             <tr>
