@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pencatatan Pengiriman Sampel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px auto; max-width: 900px; color: #333; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #333; padding-bottom: 10px; }
+        .logo { width: 280px; height: auto; margin-bottom: 5px; }
+        .company-name { font-size: 24px; font-weight: bold; margin: 5px 0; }
+        .site-name { font-size: 18px; font-weight: bold; margin: 5px 0; }
+        .info-grid { display: grid; grid-template-columns: 150px 1fr; gap: 10px; margin-bottom: 20px; align-items: center; }
+        input[type="text"], input[type="date"], select, textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; font-family: Arial, sans-serif; background-color: #fff; }
+        textarea { resize: vertical; min-height: 50px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #000; padding: 10px; text-align: left; vertical-align: top; }
+        th { background-color: #f2f2f2; text-align: center; }
+        .btn { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; border-radius: 4px; margin-bottom: 20px; font-weight: bold;}
+        .btn-print { background-color: #008CBA; }
+        .btn-submit { background-color: #ff9800; font-size: 16px; width: 100%; padding: 15px; }
+        .signatures { display: flex; justify-content: space-between; margin-top: 40px; text-align: center; }
+        .sign-box { width: 30%; }
+        .sign-space { height: 100px; }
+        
+        @media print {
+            .no-print { display: none; }
+            input, select, textarea { border: none; background: transparent; padding: 0; appearance: none; -webkit-appearance: none; }
+            body { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="https://lh3.googleusercontent.com/d/1_LHocTQd2GAnvY-gdH0pdiDKh7iDjzQT" alt="Logo SPT Group" class="logo">
+        <div class="company-name">SPT GROUP</div>
+        <div class="site-name">SITE LABAI</div>
+        <h2>FORM PENCATATAN PENGIRIMAN SAMPEL</h2>
+    </div>
+
+    <div class="info-grid">
+        <label>Perusahaan:</label>
+        <select id="perusahaan">
+            <option value="PT. Sandai Persada Tambang">PT. Sandai Persada Tambang</option>
+            <option value="PT. Labai Persada Tambang">PT. Labai Persada Tambang</option>
+            <option value="PT. Sandai Kemakmuran Utama">PT. Sandai Kemakmuran Utama</option>
+        </select>
+        <label>Tanggal Pengiriman:</label><input type="date" id="tanggal">
+        <label>Shift / Waktu:</label><input type="text" id="shift" placeholder="Contoh: Shift 1 / 10:00 WIB">
+        <label>Petugas Pengirim:</label><input type="text" id="pengirim" placeholder="Nama petugas">
+        <label>Tujuan / Lab:</label><input type="text" id="penerima" placeholder="Contoh: Lab Site Labai">
+    </div>
+
+    <h3>1. Rincian Sampel yang Dikirim</h3>
+    <table id="tabelSampel">
+        <thead>
+            <tr>
+                <th width="5%">No</th>
+                <th width="15%">Kode / ID Sampel</th>
+                <th width="15%">Jenis Sampel</th>
+                <th width="20%">Lokasi Pengambilan</th>
+                <th width="15%">Berat / Jml</th>
+                <th width="30%">Keterangan Analisa</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:center;">1</td>
+                <td><textarea placeholder="ID..."></textarea></td>
+                <td><textarea placeholder="Coal/OB..."></textarea></td>
+                <td><textarea placeholder="Pit/Seam..."></textarea></td>
+                <td><textarea placeholder="kg/gr..."></textarea></td>
+                <td><textarea placeholder="Keterangan..."></textarea></td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn no-print" onclick="tambahBaris()">+ Tambah Baris Sampel</button>
+
+    <h3>2. Catatan Tambahan</h3>
+    <textarea id="catatan" placeholder="Tuliskan catatan khusus terkait pengiriman sampel di sini..."></textarea>
+
+    <h3>3. Dokumentasi Serah Terima</h3>
+    <p class="no-print"><em>*Unggah foto bukti sampel atau dokumentasi.</em></p>
+    <table>
+        <tr>
+            <th width="50%">Dokumentasi 1</th>
+            <th width="50%">Dokumentasi 2</th>
+        </tr>
+        <tr>
+            <td style="height: 250px; text-align: center; vertical-align: middle;">
+                <input type="file" class="no-print" accept="image/*" onchange="previewImage(event, 'preview1')">
+                <br><img id="preview1" style="max-width: 100%; max-height: 200px; display: none; margin: 0 auto;">
+            </td>
+            <td style="height: 250px; text-align: center; vertical-align: middle;">
+                <input type="file" class="no-print" accept="image/*" onchange="previewImage(event, 'preview2')">
+                <br><img id="preview2" style="max-width: 100%; max-height: 200px; display: none; margin: 0 auto;">
+            </td>
+        </tr>
+        <tr>
+            <td><input type="text" placeholder="Keterangan gambar 1..."></td>
+            <td><input type="text" placeholder="Keterangan gambar 2..."></td>
+        </tr>
+    </table>
+
+    <div class="signatures">
+        <div class="sign-box">
+            <p>Dikirim / Dibuat Oleh,</p><div class="sign-space"></div>
+            <input type="text" style="text-align: center;" placeholder="( Nama )">
+            <p><strong>Petugas Pengirim</strong></p>
+        </div>
+        <div class="sign-box">
+            <p>Diterima Oleh,</p><div class="sign-space"></div>
+            <input type="text" style="text-align: center;" placeholder="( Nama )">
+            <p><strong>Petugas Lab / Penerima</strong></p>
+        </div>
+        <div class="sign-box">
+            <p>Mengetahui,</p><div class="sign-space"></div>
+            <input type="text" style="text-align: center;" placeholder="( Nama )">
+            <p><strong>Mineplan Department Head</strong></p>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;" class="no-print">
+        <button class="btn btn-submit" id="btnKirim" onclick="kirimData()">☁️ Kirim Data ke Sheet Rekapan</button>
+        <button class="btn btn-print" onclick="window.print()">Cetak / Simpan sebagai PDF</button>
+    </div>
+
+    <script>
+        let rowCount = 1;
+        function tambahBaris() {
+            rowCount++;
+            const table = document.getElementById("tabelSampel").getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td style="text-align:center;">${rowCount}</td>
+                <td><textarea placeholder="ID..."></textarea></td>
+                <td><textarea placeholder="Coal/OB..."></textarea></td>
+                <td><textarea placeholder="Pit/Seam..."></textarea></td>
+                <td><textarea placeholder="kg/gr..."></textarea></td>
+                <td><textarea placeholder="Keterangan..."></textarea></td>
+            `;
+        }
+
+        function previewImage(event, previewId) {
+            const output = document.getElementById(previewId);
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.style.display = "block";
+            output.onload = function() { URL.revokeObjectURL(output.src) }
+        }
+
+        function kirimData() {
+            const btn = document.getElementById("btnKirim");
+            const perusahaan = document.getElementById("perusahaan").value;
+            const tanggal = document.getElementById("tanggal").value;
+            const shift = document.getElementById("shift").value;
+            const pengirim = document.getElementById("pengirim").value;
+            const penerima = document.getElementById("penerima").value;
+            const catatan = document.getElementById("catatan").value;
+
+            const table = document.getElementById("tabelSampel").getElementsByTagName('tbody')[0];
+            const rows = table.getElementsByTagName('tr');
+            let samples = [];
+
+            for (let i = 0; i < rows.length; i++) {
+                let cells = rows[i].getElementsByTagName('td');
+                let no = cells[0].innerText;
+                let id = cells[1].getElementsByTagName('textarea')[0].value;
+                let jenis = cells[2].getElementsByTagName('textarea')[0].value;
+                let lokasi = cells[3].getElementsByTagName('textarea')[0].value;
+                let berat = cells[4].getElementsByTagName('textarea')[0].value;
+                let keterangan = cells[5].getElementsByTagName('textarea')[0].value;
+                
+                if(id.trim() !== "") {
+                    samples.push({no, id, jenis, lokasi, berat, keterangan});
+                }
+            }
+
+            if(samples.length === 0) {
+                alert("Mohon isi minimal 1 baris Kode/ID Sampel!");
+                return;
+            }
+
+            btn.innerHTML = "⏳ Sedang Mengirim Data...";
+            btn.disabled = true;
+
+            const payload = { perusahaan, tanggal, shift, pengirim, penerima, catatan, samples };
+
+            // === GANTI URL DI BAWAH INI DENGAN URL DARI GOOGLE APPS SCRIPT ===
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyh_ypDnT4pLnXKlClP-Zei6-XXpL_shIo49LGDLCmSlQ5anfRcWlYi0uL2YQ7wPfOW/exec'; 
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                alert("✅ Data berhasil dikirim ke Google Sheet!");
+                btn.innerHTML = "☁️ Kirim Data ke Sheet Rekapan";
+                btn.disabled = false;
+            })
+            .catch(error => {
+                alert("⚠️ Data Terkirim atau Terjadi Kendala Jaringan.");
+                btn.innerHTML = "☁️ Kirim Data ke Sheet Rekapan";
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
+```[cite: 1]
